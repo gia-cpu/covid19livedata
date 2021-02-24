@@ -1,20 +1,32 @@
 import React from 'react';
-import Title from './Title';
-import Stats from './Stats';
-import './App.css';
+
+// Components.
+import Title from './components/title/title.component';
+import LiveData from './components/live-data/live-data.component';
+import Copyright from './components/copyright/copyright.component';
+
+// Styles.
+import './main.css';
+
 
 class App extends React.Component {
+  
+  constructor() {
+    super();
+    this.versionNumber = "4.0.4";
+  }
 
   render() {
     return (
+
       <React.Fragment>
-        <Title 
-        
-        />
-        <Stats 
-        
-        />
+
+        <Title />
+        <LiveData />
+        <Copyright versionNumber={this.versionNumber} />
+
       </React.Fragment>
+
     )
   }
 
