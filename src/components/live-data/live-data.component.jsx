@@ -109,7 +109,7 @@ class Stats extends React.Component {
           data={
             this.state.covidData.map((country, key) => {
               return ([
-                __(<React.Fragment><img className="flag" src={country.countryInfo.flag} />{country.countryInfo.iso2}</React.Fragment>),
+                __(<React.Fragment><img className="flag" src={country.countryInfo.flag} /><br/>{country.countryInfo.iso2}</React.Fragment>),
                 country.country,
                 country.todayDeaths,
                 country.deaths,
@@ -120,7 +120,7 @@ class Stats extends React.Component {
             }) 
           }
           columns={[
-            { name: '-', width: '50px' },
+            { name: '-' },
             { name: '-', hidden: true }, 
             { name: 'New deaths', formatter: (cell) => `${numeral(cell).format('+0,0')}` },
             { name: 'All deaths', formatter: (cell) => __(<span className="light">{numeral(cell).format('0.0a')}</span>) },

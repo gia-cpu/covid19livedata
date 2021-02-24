@@ -25,22 +25,16 @@ table { border-spacing: 0; } /* Removes space between cells. */
   font-size: 13px;
   text-align: center; }
 
-.gridjs-tr { height: 25px; }
+.gridjs-tr { line-height: 20px;}
 
 .gridjs-tr:nth-child(odd) { /* Odd/even backgrounds. */
   background: rgb(45, 71, 92) !important; }
 
-.gridjs-tr .gridjs-td:nth-child(1) { /* Aligning flags to the left. */
-  text-align: left;
-  padding-left: 10px; }
-
 .flag { 
   width: 20px; 
-  height: 11px; 
-  margin-right: 5px; 
-  position:relative; 
-  top:1px; 
-  clear:right; }
+  position: relative;
+  top: 5px;
+  height: 11px;}
 
 
 .title {
