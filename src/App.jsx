@@ -13,7 +13,7 @@ class App extends React.Component {
   
   constructor() {
     super();
-    this.versionNumber = "4.0.4";
+    this.versionNumber = "4.0.5";
   }
 
   render() {
