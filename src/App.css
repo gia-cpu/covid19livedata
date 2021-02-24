@@ -84,6 +84,12 @@ button {
   text-align: center;
 }
 .gridjs-search-input {
+  display: none;
+}
+.search-box {
+  text-align: center;
+}
+.search-front {
   font-size: 14px;
   padding: 6px 10px;
   background:rgb(24, 39, 51);

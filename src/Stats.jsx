@@ -1,5 +1,6 @@
 import React from 'react';
-import { Grid, _ } from "gridjs-react";
+import { Grid, _ as __ } from "gridjs-react";
+import _ from 'lodash';
 import numeral from 'numeral';
 import './App.css';
 
@@ -12,44 +13,52 @@ class Stats extends React.Component {
       covidData: [],
       when: 'now'
     }
-    const FETCH_URL = '';
+    const todayData = [];
+    const yesterdayData = [];
   }
+
 
   toggleYesterday = (when) => {
     if (when === 'now'){
-      this.setState({ when: 'yesterday' }, () => {this.fetchCountriesData()});
+      this.setState({
+        when: 'yesterday',
+        covidData: this.yesterdayData
+      });
     } else {
-      this.setState({ when: 'now' }, () => {this.fetchCountriesData()});
+      this.setState({ 
+        when: 'now',
+        covidData: this.todayData 
+      });
     }
-  }
-
-  fetchCountriesData() {
-    console.log(this.state.when);
-    if (this.state.when === 'now'){
-      this.FETCH_URL = "https://corona.lmao.ninja/v2/countries?&sort=todayDeaths";
-    } else {
-      this.FETCH_URL = "https://corona.lmao.ninja/v2/countries?yesterday=true&sort=todayDeaths";
-    }
-    
-    fetch(this.FETCH_URL, {
-      method: 'GET',
-      cache: "force-cache"
-    })
-      .then( res => res.json() )
-      .then( json => { 
-        this.setState({ 
-          covidData: json 
-        });
-        console.log(json);
-    });
   }
 
   
   componentDidMount() {
-    this.fetchCountriesData();
+
+    fetch('https://corona.lmao.ninja/v2/countries?&sort=todayDeaths', {
+      method: 'GET'
+    })
+      .then( res => res.json() )
+      .then( json => {
+        this.todayData = json
+        this.setState({ 
+          covidData: json 
+        });
+      })
+
+    fetch('https://corona.lmao.ninja/v2/countries?yesterday=true&sort=todayDeaths', {
+      method: 'GET'
+    })
+      .then( res => res.json() )
+      .then( json => {
+        this.yesterdayData = json
+      })
+
   }
 
   render() {
+
+    const searchKeyword = this.state.searchTerm;
     
     return (
       <React.Fragment>
@@ -59,11 +68,27 @@ class Stats extends React.Component {
             { this.state.when === 'now' ? "today's" : "yesterday's" }
           </button>&nbsp;data.
         </div>
+        <div className="search-box">
+          <input 
+            type="search" 
+            className="search-front"
+            placeholder="Search a country..."
+            onChange={(e) => {
+              e.persist();
+              if (!this.debouncedFn) {
+                this.debouncedFn =  _.debounce(() => {
+                  this.setState({ searchTerm: e.target.value })
+                }, 300);
+              }
+              this.debouncedFn();
+            }}
+          />
+        </div>
         <Grid
-          data={      
+          data={
             this.state.covidData.map((country, key) => {
               return ([
-                _(<React.Fragment><img className="flag" src={country.countryInfo.flag} />{country.countryInfo.iso2}</React.Fragment>),
+                __(<React.Fragment><img className="flag" src={country.countryInfo.flag} />{country.countryInfo.iso2}</React.Fragment>),
                 country.country,
                 country.todayDeaths,
                 country.deaths,
@@ -87,7 +112,7 @@ class Stats extends React.Component {
             },
             {
               name: 'All deaths',
-              formatter: (cell) => _(<span className="light">{numeral(cell).format('0.0a')}</span>)
+              formatter: (cell) => __(<span className="light">{numeral(cell).format('0.0a')}</span>)
             },
             {
               name: 'New cases',
@@ -95,7 +120,7 @@ class Stats extends React.Component {
             },
             {
               name: 'All cases',
-              formatter: (cell) => _(<span className="light">{numeral(cell).format('0.0a')}</span>)
+              formatter: (cell) => __(<span className="light">{numeral(cell).format('0.0a')}</span>)
             },
             {
               name: 'Deaths/M',
@@ -107,7 +132,10 @@ class Stats extends React.Component {
               enabled: true,
             }
           }
-          search={true}
+          search={{
+            enabled: true,
+            keyword: this.state.searchTerm
+          }}
           pagination={{
             enabled: true,
             limit: 50,
@@ -115,7 +143,6 @@ class Stats extends React.Component {
           language={{
             search: {
               placeholder: 'Search a country...',
-              keyword: `${this.state.searchTerm}`
             },
             pagination: {
               previous: '←',
@@ -123,7 +150,7 @@ class Stats extends React.Component {
             }
           }}
         />
-        <div className="copyright">v4 - Giacomo M. - NovelCOVID API</div>
+        <div className="copyright">v4.0.1 - Giacomo M. - NovelCOVID API</div>
       </React.Fragment>
     )
   }
